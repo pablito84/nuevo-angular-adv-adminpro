@@ -7,6 +7,9 @@
    animation-fill-mode:both
   }
 
+.curso, .cursor {
+  cursor: pointer;
+}
 
   #themecolors .selector {
       cursor: pointer;
