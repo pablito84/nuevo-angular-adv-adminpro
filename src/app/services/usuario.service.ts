@@ -1,13 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
-import { tap, map, Observable, catchError, of } from 'rxjs';
+import { tap, map, Observable, catchError, of, delay } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
+import { cargarUsuario } from '../interfaces/cargar-usuarios.interface';
+
 import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario.model';
+import { response } from 'express';
+
 
 
 declare const google: any;
@@ -32,6 +36,14 @@ get token():string {
 
 get uid() :string{
   return this.usuario.uid || '';
+}
+
+get headers(){
+  return {
+    headers: {
+      'x-token': this.token
+    }
+  }
 }
 
   logout() {
@@ -125,4 +137,41 @@ get uid() :string{
                     )
 
   }
+
+  cargarUsuarios( desde: number = 0) {
+
+    //http://localhost:3005/api/usuarios?desde=5
+    const url = `${ base_url }/usuarios?desde=${ desde }`;
+    return this.http.get<cargarUsuario>( url , this.headers )
+            .pipe(
+             // delay(5000),
+              map( resp => {
+                console.log('RESP', resp);
+                const usuarios = resp.usuarios.map(
+                  user => new Usuario( user.nombre , user.email , '' , user.img , user.google, user.role , user.uid )
+                );
+
+                return {
+                  total: resp.total,
+                  usuarios
+                };
+              })
+            )
+  }
+
+eliminarUsuario(usuario: Usuario ){
+  //console.log('eliminando');
+  //usuarios/63fe8ea64cd575d06dcd6577
+  const url = `${ base_url }/usuarios/${ usuario.uid}`;
+  return this.http.delete( url , this.headers );
+
+}
+
+guardarUsuario( usuario : Usuario ){
+
+    return this.http.put(`${ base_url }/usuarios/${ usuario.uid }`, usuario , this.headers );
+
+    }
+
+
 }
