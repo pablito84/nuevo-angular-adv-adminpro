@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit , ViewChild } from '@angular/core';
 import { ModalImagenService } from 'src/app/services/modal-imagen.service';
 import { FileUploadService } from '../../services/file-upload.service';
 import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-modal-imagen',
@@ -9,11 +10,13 @@ import Swal from 'sweetalert2';
   styles: [
   ]
 })
+
 export class ModalImagenComponent implements OnInit {
 
   public imagenSubir: File;
   public imgTemp: any = null;
 
+  @ViewChild( 'inputFile' ) myInputVariable: ElementRef;
 
   constructor(public modalImagenService: ModalImagenService ,
               public fileUploadService: FileUploadService) { }
@@ -24,6 +27,7 @@ export class ModalImagenComponent implements OnInit {
   cerrarModal(){
     this.imgTemp = null;
     this.modalImagenService.cerrarModal();
+    this.myInputVariable.nativeElement.value = '';
   }
 
 
@@ -63,4 +67,5 @@ export class ModalImagenComponent implements OnInit {
             Swal.fire('Error' , 'No se pudo subir la imagen.', 'error')
           })
     }
+
 }

@@ -29,7 +29,8 @@
                 </div>
 
                 <input type="file"
-                (change)="cambiarImagen($any($event.target).files[0])">
+                       #inputFile
+                      (change)="cambiarImagen($any($event.target).files[0])">
 
               </div>
               <div class="modal-footer">
