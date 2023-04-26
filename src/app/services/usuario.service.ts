@@ -34,6 +34,10 @@ get token():string {
     return localStorage.getItem('token') || '';
 }
 
+get role(): 'ADMIN_ROLE' | 'USER_ROLE' {
+  return this.usuario.role;
+}
+
 get uid() :string{
   return this.usuario.uid || '';
 }
@@ -46,8 +50,14 @@ get headers(){
   }
 }
 
+guardarLocalStorage( token: string , menu: any ) {
+  localStorage.setItem('token', token );
+  localStorage.setItem('menu' , JSON.stringify( menu ) );
+}
+
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('menu');
 
     google.accounts.id.revoke('pablofmateo@gmail.com' , () => {
       this.ngZone.run( ()=>{
@@ -78,7 +88,7 @@ get headers(){
 
       /*   this.usuario.imprimirUsuario(); */
 
-        localStorage.setItem('token', resp.token );
+        this.guardarLocalStorage( resp.token , resp.menu );
         return true;
       }),
       catchError( error => {
@@ -94,7 +104,7 @@ get headers(){
     return this.http.post( `${ base_url }/usuarios` , formData )
                     .pipe(
                       tap( (resp: any) => {
-                          localStorage.setItem('token', resp.token )
+                        this.guardarLocalStorage( resp.token , resp.menu );
                       })
                   );
 
@@ -120,7 +130,7 @@ get headers(){
     return this.http.post( `${ base_url }/login` , formData )
                .pipe(
                   tap( (resp: any) => {
-                      localStorage.setItem('token', resp.token )
+                    this.guardarLocalStorage( resp.token , resp.menu );
                   })
                );
 
@@ -131,8 +141,7 @@ get headers(){
                     .pipe(
                       tap( ( resp:any ) =>{
                         console.log(resp);
-
-                        localStorage.setItem('token' , resp.token )
+                        this.guardarLocalStorage( resp.token , resp.menu );
                       })
                     )
 

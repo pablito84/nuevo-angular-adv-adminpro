@@ -11,12 +11,11 @@ import { Usuario } from '../../models/usuario.model';
 })
 export class SidebarComponent implements OnInit {
 
-  menuItems: any[];
-  //public imgUrl: string | undefined = '' ;
+
   public usuario: Usuario | undefined;
-  constructor( private sidebarService: SidebarService,
+  constructor( public sidebarService: SidebarService,
                private usuarioService: UsuarioService ) {
-    this.menuItems = sidebarService.menu;
+ //   this.menuItems = sidebarService.menu;
     //console.log(this.menuItems);
    // this.imgUrl = usuarioService.usuario?.imagenUrl;
    this.usuario = usuarioService.usuario;
